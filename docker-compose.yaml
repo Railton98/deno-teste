@@ -1,0 +1,38 @@
+# v3 syntax
+version: "3"
+
+# Named volumes
+volumes:
+  # MySQL Data
+  deno-mysql-data:
+    driver: local
+
+services:
+  # MySQL (5.7)
+  mysql:
+    image: mysql:5.7
+    container_name: deno-mysql
+    volumes:
+      - deno-mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=deno
+      - MYSQL_DATABASE=deno
+      - MYSQL_USER=deno
+      - MYSQL_PASSWORD=deno
+  # PHPMYADMIN
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: deno-phpmyadmin
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    ports:
+      - "81:80"
+    environment:
+      - PMA_HOST=mysql
+      - MYSQL_ROOT_PASSWORD=deno
+      - MYSQL_USER=deno
+      - MYSQL_PASSWORD=deno
